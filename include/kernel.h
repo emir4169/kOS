@@ -1,10 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-/*
-    makes sure rust driver is included everywhere
-*/
-#include "drivers/rs/rust_driver.h"
 #include <stdbool.h>
 #include "gdt.h"
 #include "interrupt.h"

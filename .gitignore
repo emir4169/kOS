@@ -6,3 +6,5 @@ lib/target/
 multiboot/boot/kos.bin
 bin/kos.iso
 target/
+target/.rustc_info.json
+.vscode

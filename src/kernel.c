@@ -18,8 +18,7 @@
 #include "drivers/tty.h"
 #include "drivers/keyboard.h"
 #include "drivers/rtc.h"
-#include "drivers/pit.h"
-
+#include "drivers/rs/rust_driver.h"
 /* Kernel entry point (init hardware and drivers) */
 void 
 kernel_main(__attribute__((used)) uint32_t magic, volatile multiboot_info_t* mbd) 
