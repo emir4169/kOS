@@ -18,6 +18,7 @@
 #include "drivers/tty.h"
 #include "drivers/keyboard.h"
 #include "drivers/rtc.h"
+#include "drivers/pit.h"
 #include "drivers/rs/rust_driver.h"
 /* Kernel entry point (init hardware and drivers) */
 void 
