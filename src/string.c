@@ -80,3 +80,37 @@ kstrcmp(const char* a, const char* b)
 
     return true;
 }
+bool 
+kstrncmp(const char* a, const char* b, const size_t length) 
+{
+    // Cache length of a and b
+    size_t a_len = kstrlen(a);
+    size_t b_len = kstrlen(b);
+
+    //// If lengths don't match, then strings are not the same
+    //if (a_len != b_len) return false;
+
+    // Loop through each character and compare
+    for (size_t i = 0; i < length; ++i) {
+        if (a[i] == b[i]) continue;
+        // Fail check if any are different
+        return false;
+    }
+
+    return true;
+}
+// function like kstrcomp but sees if string a starts with string b and if so, returns everything after b seperated by spaces in a array
+bool
+kstrstr(const char* a, const char* b) {
+    return kstrncmp(a, b, kstrlen(b));
+}
+// function that takes string a, int b, and c and returns a string that is a substring of a starting at b and ending at c
+char*
+ksubstr(const char* a, int b, int c) {
+    char* res = (char*) kmalloc((c - b + 1) * sizeof(char));
+    for (int i = 0; i < (c - b); ++i) {
+        res[i] = a[b + i];
+    }
+    res[c - b] = '\0';
+    return res;
+}

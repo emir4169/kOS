@@ -27,6 +27,9 @@
 char* 
 kitoa(int value, char* str, int base);
 
+int 
+kmemcmp(const void* addr1, const void* addr2, size_t n);
+
 void
 kmemset(void* dest, register int data, register size_t length);
 

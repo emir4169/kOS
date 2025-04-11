@@ -18,7 +18,7 @@
 #include "drivers/keyboard.h"
 #include "drivers/tty.h"
 #include "drivers/fat.h"
-
+#include "drivers/ramfs.h"
 /* Our keyboard input buffer */
 static char* inputbuf;
 /* Initialize head pointer for input buffer */
@@ -53,6 +53,26 @@ process_cmd()
     {
         // dump fat bios parameter block
         fat_dump_bs();
+    }
+    else if (kstrcmp(inputbuf, "dumpramfs"))
+    {
+        ramfs_dump(ramdisk);
+    }
+    else if (kstrstr(inputbuf, "run", kstrlen("run")))
+    {
+        ramdisk_file_t file = ramdisk_lookup(ramdisk, "code.bin");
+        // 0 out eax
+        asm volatile
+        (
+            "mov 0, %%eax\n"
+            : /* no output */
+            : /* no input */
+            : "%eax"
+        );
+        int (*func)() = ((int (*)())file.data);
+        int ret = func();
+        printk("Returned:%x\n", ret);
+
     }
     else if (kstrcmp(inputbuf, "neofetch"))
     {

@@ -20,7 +20,9 @@
 /* Init syscall table */
 static syscall_t syscall_entries[10] = {
     __write,
-    __open
+    __open,
+    __print,
+    __malloc
 };
 
 /* Unused for now */
@@ -100,7 +102,34 @@ __open(i_register_t* registers)
 {
     printk("syscall open()\n");
 }
-
+// print(), prints ecx bytes of data starting from ebx to the terminal with printk()
+static void 
+__print(i_register_t* registers)
+{
+    char* buffer = (char*) registers->ebx;
+    size_t n = registers->ecx;
+    if (n > 0) {
+        char output[n + 1]; // create a buffer with the specified size plus one for null-terminator
+        kmemcpy(output, buffer, n); // copy data to the buffer
+        output[n] = '\0'; // null-terminate the string
+        printk("%s", output); // print the data to the terminal
+    }
+}
+// malloc(), allocates memory of size ebx and returns the address in ebx
+static void
+__malloc(i_register_t* registers)
+{
+    size_t size = registers->ebx;
+    void* ptr = kmalloc(size);
+    // use inline asm to set ebx
+    asm volatile(
+        "movl %0, %%ebx\n"
+        : /* no output */
+        : "r"((uint32_t)ptr)
+        : "%ebx"
+    );
+    registers->ebx = (uint32_t)ptr;
+}
 /* Init syscall callbacks */
 void 
 syscall_init() 
