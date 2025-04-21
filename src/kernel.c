@@ -19,11 +19,13 @@
 #include "drivers/keyboard.h"
 #include "drivers/rtc.h"
 #include "drivers/pit.h"
-    #include "drivers/ramfs.h"
+#include "drivers/ramfs.h"
+#include "drivers/serial.h"
 /* Kernel entry point (init hardware and drivers) */
 void 
 kernel_main(__attribute__((used)) uint32_t magic, volatile multiboot_info_t* mbd) 
 {
+    serial_init();
     // init kernel tty first
     tty_init();
 
@@ -53,7 +55,8 @@ kernel_main(__attribute__((used)) uint32_t magic, volatile multiboot_info_t* mbd
     // print a dope ass message
     tty_neofetch();
     ksh_init();
-
     // hang
-    for(;;);
+    for(;;){
+        ksh_poll_serial();
+    };
 }

@@ -27,6 +27,7 @@ static void __write(i_register_t* registers);
 static void __open(i_register_t* registers);
 static void __print(i_register_t* registers);
 static void __malloc(i_register_t* registers);
+static void __free(i_register_t* registers);
 
 typedef void (*syscall_t)(i_register_t* registers);
 

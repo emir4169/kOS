@@ -19,6 +19,7 @@
 #include "drivers/tty.h"
 #include "drivers/fat.h"
 #include "drivers/ramfs.h"
+#include "drivers/serial.h"
 /* Our keyboard input buffer */
 static char* inputbuf;
 /* Initialize head pointer for input buffer */
@@ -58,9 +59,10 @@ process_cmd()
     {
         ramfs_dump(ramdisk);
     }
-    else if (kstrstr(inputbuf, "run", kstrlen("run")))
+    else if (kstrstr(inputbuf, "run", 3))
     {
-        ramdisk_file_t file = ramdisk_lookup(ramdisk, "code.bin");
+        char* filename = inputbuf + 4;
+        ramdisk_file_t file = ramdisk_lookup(ramdisk, filename);
         // 0 out eax
         asm volatile
         (
@@ -115,6 +117,10 @@ notify_cb(uint8_t scan, uint8_t pressed)
             // remove last char from input buffer
             inputbuf[--inputbuf_head] = 0;
 
+            write_serial('\b');
+            write_serial(' ');
+            write_serial('\b');
+
             // remove char from screen
             tty_putc_relative('\0', -1, 0, TRUE);
             break;
@@ -161,12 +167,50 @@ ksh_init()
 {
     // allocate 256 byte input buffer
     inputbuf = (char*)kmalloc(KSH_INPUT_BUF_SIZE);
+    // reset input buffer head
+    inputbuf_head = 0;
 
+    // reset our input buffer
+    kmemset(inputbuf, 0, KSH_INPUT_BUF_SIZE);
     // set our keypress callback
     keyboard_set_notify_cb(notify_cb);
 
     // write initial prompt
     tty_writecolor("> ", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+}
+void ksh_poll_serial()
+{
+    if (serial_received())
+    {
+        char c = inb(PORT);
+
+        if (inputbuf_head < (KSH_INPUT_BUF_SIZE - 1))
+        {
+            if (c == '\r' || c == '\n')
+            {
+                tty_write("\n");
+                process_cmd();
+                tty_writecolor("> ", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+            }
+            else if (c == '\b' || c == 0x7f)
+            {
+                if (inputbuf_head > 0)
+                {
+                    inputbuf[--inputbuf_head] = 0;
+
+                    write_serial('\b');
+                    write_serial(' ');
+                    write_serial('\b');
+                    tty_putc_relative('\0', -1, 0, TRUE);
+                }
+            }
+            else
+            {
+                inputbuf[inputbuf_head++] = c;
+                tty_putc(c);
+            }
+        }
+    }
 }
 
 void

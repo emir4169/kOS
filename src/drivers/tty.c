@@ -17,7 +17,7 @@
 #include "kernel.h"
 #include "drivers/tty.h"
 #include "drivers/vga.h"
-
+#include "drivers/serial.h"
 static tty_state_t tty_state;
 
 /* Init tty interface and set default color to white on black */
@@ -61,6 +61,8 @@ tty_writecolor(const char* str, vga_color_t fg, vga_color_t bg)
 void 
 tty_putc(char c)
 {
+    write_serial(c);
+
     if (c != '\n') vga_putc(c, tty_state.row, tty_state.col);
 
     // if we are at the end of the line (80 columns), break line

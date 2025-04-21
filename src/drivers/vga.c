@@ -18,8 +18,31 @@
 #include "drivers/vga.h"
 
 static uint16_t g_vga_color;
+#ifdef NO_VGA
+/* stub functions that do nothing */
+void
+vga_setcolor(vga_color_t fg, vga_color_t bg) {}
+void
+vga_init() {}
+void
+vga_putc(char c, size_t row, size_t col) {}
+void
+vga_scroll() {}
+void
+vga_setbar(vga_color_t fg, vga_color_t bg, const char* str, size_t offset) {}
+void
+vga_clear() {}
+void
+vga_cursor_disable() {}
+void
+vga_cursor_enable(uint8_t start, uint8_t end) {}
+void
+vga_update_cursor(int x, int y) {}
+cursor_pos_t
+vga_get_cursor_position() {return (cursor_pos_t){0, 0};}
 
-/* Sets color entry for VGA buffer */
+#else
+    /* Sets color entry for VGA buffer */
 void 
 vga_setcolor(vga_color_t fg, vga_color_t bg) 
 {
@@ -161,3 +184,5 @@ vga_get_cursor_position()
     return cursor_pos;
 }
 
+
+#endif

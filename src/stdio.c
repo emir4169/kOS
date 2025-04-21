@@ -18,7 +18,7 @@
 #include "kernel.h"
 #include "drivers/tty.h"
 #include "drivers/vga.h"
-
+#include "drivers/serial.h"
 /* Converts int to ascii representation (used for printing) */
 char* 
 kitoa(int value, char* str, int base) 
@@ -97,6 +97,7 @@ printk(const char* fmt, ...)
     for(i = 0; (c = fmt[i] & 0xff) != 0; i++) {
         // if token not found, write raw character
         if (c != '%') {
+            //write_serial(c);
             tty_putc(c);
             continue;
         }

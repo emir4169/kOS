@@ -17,6 +17,7 @@
 #include "kernel.h"
 #include "drivers/keyboard.h"
 #include "drivers/tty.h"
+#include "drivers/serial.h"
 
 /* Define uppercase and lowercase char mappings */
 static const uint32_t lowercase[128] = {
