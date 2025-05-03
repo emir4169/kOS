@@ -18,6 +18,7 @@
 #include "drivers/tty.h"
 #include "drivers/vga.h"
 #include "drivers/serial.h"
+#include "drivers/fb.h"
 static tty_state_t tty_state;
 
 /* Init tty interface and set default color to white on black */
@@ -42,6 +43,8 @@ tty_write(const char* str)
     {
         // detect when a newline character is present
         tty_putc(str[i]);
+        
+        
     }
 }
 
@@ -64,6 +67,7 @@ tty_putc(char c)
     write_serial(c);
 
     if (c != '\n') vga_putc(c, tty_state.row, tty_state.col);
+    if (c != '\n') draw_text(tty_state.col, tty_state.row, c, (uint8_t)tty_state.fgcolor);
 
     // if we are at the end of the line (80 columns), break line
     if (++tty_state.col == VGA_WIDTH || c == '\n') 

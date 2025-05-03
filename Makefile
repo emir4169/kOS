@@ -13,7 +13,7 @@ RUSTENTRY := $(RUSTBIN)/$(RUSTTARGET)/debug/libkOS.a
 CC := i686-elf
 DOCKER := docker run -it --rm -v .:/root/env kos
 ASC := nasm -f elf32
-EMU := qemu-system-i386 -hda
+EMU := qemu-system-i386 -serial stdio -hda
 
 KERNELTARGET := kos
 OBJECTS := $(OBJECTDIR)/*.o

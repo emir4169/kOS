@@ -21,12 +21,14 @@
 #include "drivers/pit.h"
 #include "drivers/ramfs.h"
 #include "drivers/serial.h"
+#include "drivers/fb.h"
 /* Kernel entry point (init hardware and drivers) */
 void 
 kernel_main(__attribute__((used)) uint32_t magic, volatile multiboot_info_t* mbd) 
 {
     serial_init();
     // init kernel tty first
+
     tty_init();
 
     // check GRUB version
@@ -40,10 +42,9 @@ kernel_main(__attribute__((used)) uint32_t magic, volatile multiboot_info_t* mbd
     rtc_init();
     pit_init();
     keyboard_init();
-
     // init physical memory manager
     pmm_init(mbd);
-
+    init_graphics();
     // init heap
     kmalloc_init();
 
