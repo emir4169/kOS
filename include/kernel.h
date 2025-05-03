@@ -17,6 +17,7 @@
 #include "string.h"
 #include "syscall.h"
 #include "ksh.h"
+#include "misc.h"
 
 /* Kernel start/end mappings from linker */
 extern volatile uint32_t _kernel_start;
